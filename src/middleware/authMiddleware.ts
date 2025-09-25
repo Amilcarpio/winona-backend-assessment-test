@@ -1,16 +1,22 @@
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
+import { AuthService } from "../services/authService";
 
 export const authMiddleware = (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.headers["authorization-token"]; 
-  if (!token) return res.status(401).json({ error: "No token provided" });
+  const authHeader = req.headers.authorization;
+  
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: "No valid token provided" });
+  }
+
+  const token = authHeader.substring(7); // Remove 'Bearer ' prefix
 
   try {
-    const decoded = jwt.verify(token as string, process.env.JWT_SECRET!);
+    const authService = new AuthService();
+    const decoded = authService.verifyToken(token);
     (req as any).user = decoded;
     next();
   } catch (err) {
