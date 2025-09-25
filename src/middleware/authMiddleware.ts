@@ -12,7 +12,7 @@ export const authMiddleware = (
     return res.status(401).json({ error: "No valid token provided" });
   }
 
-  const token = authHeader.substring(7); // Remove 'Bearer ' prefix
+  const token = authHeader.substring(7);
 
   try {
     const authService = new AuthService();

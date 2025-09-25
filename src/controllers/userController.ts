@@ -18,7 +18,6 @@ export class UserController {
         return;
       }
 
-      // Return user data without password
       const { password, ...userProfile } = user;
       res.json(userProfile);
     } catch (error) {
