@@ -10,7 +10,7 @@ This document details the bugs found in the backend assessment codebase and the 
 
 **Location**: `src/routes/auth.ts`, line 26
 **Problem**: The `bcrypt.compare()` function returns a Promise but was not being awaited
-**Symptoms**: Login always failed even with correct credentials
+**Symptoms**: Login always succeeded regardless of password correctness (accepts any password)
 **Root Cause**: Asynchronous operation treated as synchronous
 
 ```typescript
@@ -23,7 +23,7 @@ const isValid = await bcrypt.compare(password, user.password);
 if (!isValid) return res.status(401).json({ error: "Invalid credentials" });
 ```
 
-**How I Found It**: Testing login endpoint showed it always returned "Invalid credentials" regardless of password correctness.
+**How I Found It**: Testing login endpoint with wrong passwords showed it still returned valid tokens, indicating the password validation was bypassed.
 
 ### Bug #2: Typo in Environment Variable Name
 
